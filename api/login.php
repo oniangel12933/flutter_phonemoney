@@ -18,11 +18,11 @@ function test() {
         response(true, "xxxxx", $users);
 
     }
+    else {
+        response(false, "No users", NULL);
+    }
 }
-
-else {
-    response(false, "No users", NULL);
-}
+/////////////
 
 function response($status, $message, $data)
 { 
