@@ -4,19 +4,22 @@ header("Content-Type: application/json; charset=UTF-8");
 require "config.php";
 $data = json_decode(file_get_contents('php://input'), true);
 
-$senddata = '';
-$sel_con = "SELECT * FROM user";
-$result = mysqli_query($conn, $sel_con);
-if($result -> num_rows > 0)
-{   
-    $users = array();
-    while($row = $result -> fetch_assoc()) {
-        array_push($users, $row);
+function test() {
+    $senddata = '';
+    $sel_con = "SELECT * FROM user";
+    $result = mysqli_query($conn, $sel_con);
+    if($result -> num_rows > 0)
+    {   
+        $users = array();
+        while($row = $result -> fetch_assoc()) {
+            array_push($users, $row);
+        }
+
+        response(true, "xxxxx", $users);
+
     }
-
-    response(true, "xxxxx", $users);
-
 }
+
 else {
     response(false, "No users", NULL);
 }
