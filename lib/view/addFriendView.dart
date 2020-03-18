@@ -8,7 +8,7 @@ import '../utils/components.dart';
 import '../widgets/friend_item.dart';
 
 
-
+// Commentedß
 class AddFriendView extends StatefulWidget {
   @override
   AddFriendViewState createState() => AddFriendViewState();
