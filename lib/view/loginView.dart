@@ -1,3 +1,5 @@
+import 'dart:ffi';
+
 import 'package:flutter/material.dart';
 import '../utils/uiData.dart';
 import '../utils/appData.dart';
@@ -22,7 +24,7 @@ class LoginView extends StatelessWidget {
       children: <Widget>[
         mainHeader(), 
         SizedBox(height: 10),        
-        borderedTextField(user_name_in, TextInputType.number, false, "Phone Number", UIData.largePadding), 
+        borderedTextField(user_name_in, TextInputType.number, false, "Phone Number", UIData.largePadding, textFieldNull()), 
         SizedBox(height: 30),
         secureTextField(user_pwd_in, true, TextInputType.emailAddress, "Password", UIData.largePadding),
         SizedBox(height: 50),
@@ -34,6 +36,8 @@ class LoginView extends StatelessWidget {
         ],
     )
   );
+
+  
 
   Function normalLogin(BuildContext context) {    
     

@@ -43,16 +43,13 @@ class MainViewState extends State<MainView>  {
           default:
             break;
         }
-        if (_selectedMenu.title == "New Group") {
-          createGroupAlert();
-        }
       });
     }
 
 
     return Scaffold(
       appBar: AppBar(
-          title: Text((app_status_index == 0) ? 'My Contributes' : default_groups[selected_index].title ,style: TextStyle(color: Colors.white)),
+          title: Text((app_status_index == 0) ? 'My Contributes' : default_groups[selected_group_index].title ,style: TextStyle(color: Colors.white)),
           centerTitle: true,
           backgroundColor: Colors.black,
           leading: app_status_index != 0 ? Builder(
@@ -110,16 +107,16 @@ class MainViewState extends State<MainView>  {
                     }
                   }
                   else {
-                    Contribute cell = Contribute("", names[random.nextInt(10)], details[random.nextInt(10)], "${random.nextInt(900)}", "0", "2020-03-25", "2020-03-29", new_contribute_beneficiary_name.text, new_contribute_beneficiary_number.text, User("", names[random.nextInt(10)], phones[random.nextInt(10)], true));
+                    Contribute new_contribute = Contribute("", names[random.nextInt(10)], details[random.nextInt(10)], "${random.nextInt(900)}", "0", "2020-03-25", "2020-03-29", new_contribute_beneficiary_name.text, new_contribute_beneficiary_number.text, User("", names[random.nextInt(10)], phones[random.nextInt(10)], true));
                     if (default_contributes == null || default_contributes.length == 0) {
-                        default_contributes = [cell];
+                        default_contributes = [new_contribute];
                     }
                     else {
-                      default_contributes.add(cell);
+                      default_contributes.add(new_contribute);
                     }
 
                     User new_member = User("", names[random.nextInt(10)], phones[random.nextInt(10)], random.nextBool());
-                    default_groups[selected_index].members.add(new_member);
+                    default_groups[selected_group_index].members.add(new_member);
                   }
 
                 });
@@ -225,9 +222,9 @@ class MainViewState extends State<MainView>  {
 
                 Text("Create Group", style: TextStyle(fontWeight: FontWeight.w500, color: Colors.blue,fontSize: 25)),
                 SizedBox(height: 30),
-                borderedTextField(new_group_title, TextInputType.text, false, "Title", UIData.smallPadding), 
+                borderedTextField(new_group_title, TextInputType.text, false, "Title", UIData.smallPadding, textFieldNull()), 
                 SizedBox(height: 10),
-                borderedTextField(new_group_description, TextInputType.text, true, "Description", UIData.smallPadding), 
+                borderedTextField(new_group_description, TextInputType.text, true, "Description", UIData.smallPadding, textFieldNull()), 
                 SizedBox(height: 30,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -293,7 +290,7 @@ class MainViewState extends State<MainView>  {
                   action: () {
                     setState(() {
                       app_status_index = 1;
-                      selected_index = index;
+                      selected_group_index = index;
                     });
                   },
                 );
@@ -414,17 +411,17 @@ class MainViewState extends State<MainView>  {
 
                 Text("Create Contribute", style: TextStyle(fontWeight: FontWeight.w500, color: Colors.blue,fontSize: 25)),
                 SizedBox(height: 20),
-                borderedTextField(new_contribute_title, TextInputType.text, false, "Title", UIData.smallPadding), 
+                borderedTextField(new_contribute_title, TextInputType.text, false, "Title", UIData.smallPadding, textFieldNull()), 
                 SizedBox(height: 10),
-                borderedTextField(new_contribute_description, TextInputType.text, true, "Description", UIData.smallPadding), 
+                borderedTextField(new_contribute_description, TextInputType.text, true, "Description", UIData.smallPadding, textFieldNull()), 
                 SizedBox(height: 10),
-                borderedTextField(new_contribute_amount, TextInputType.number, false, "Target Amount(optional)", UIData.smallPadding), 
+                borderedTextField(new_contribute_amount, TextInputType.number, false, "Target Amount(optional)", UIData.smallPadding, textFieldNull()), 
                 SizedBox(height: 20,),
                 Text("Settlement Details(MTN Momo)", style: TextStyle(fontWeight: FontWeight.w500, color: Colors.grey,fontSize: 15)),
                 SizedBox(height: 10),
-                borderedTextField(new_contribute_beneficiary_number, TextInputType.number, false, "Beneficiary MTN number", UIData.smallPadding), 
+                borderedTextField(new_contribute_beneficiary_number, TextInputType.number, false, "Beneficiary MTN number", UIData.smallPadding, textFieldNull()), 
                 SizedBox(height: 10),
-                borderedTextField(new_contribute_beneficiary_name, TextInputType.text, false, "Beneficiary Name", UIData.smallPadding), 
+                borderedTextField(new_contribute_beneficiary_name, TextInputType.text, false, "Beneficiary Name", UIData.smallPadding, textFieldNull()), 
                 SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -496,8 +493,8 @@ class MainViewState extends State<MainView>  {
                   isOnLine: contribute.created_user.isOnLine,
                   action: () {
                     setState(() {
-                      // app_status_index = 1;
-                      // selected_index = index;
+                      selected_contribute_index = index;
+                      Navigator.pushNamed(context, UIData.donateRoute);
                     });
                   },
                 );
@@ -531,7 +528,7 @@ class MainViewState extends State<MainView>  {
                    child:
                     Text("Add up to ten phone numbers separated by commas(,)", style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black54,fontSize: 17)),
                 ),
-                borderedTextField(new_member_phone, TextInputType.text, true, "Phones(separate with comma)", UIData.smallPadding), 
+                borderedTextField(new_member_phone, TextInputType.text, true, "Phones(separate with comma)", UIData.smallPadding, textFieldNull()), 
                 SizedBox(height: 30,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -552,7 +549,7 @@ class MainViewState extends State<MainView>  {
                       for (var cell in array) {
                         final number = cell.trim();
                         User user = User("", number, number, random.nextBool());
-                        default_groups[selected_index].members.add(user);
+                        default_groups[selected_group_index].members.add(user);
                       }
                     });
 
@@ -611,9 +608,9 @@ class MainViewState extends State<MainView>  {
                         ),
                       );
                     },
-                    itemCount: default_groups[selected_index].members.length,
+                    itemCount: default_groups[selected_group_index].members.length,
                     itemBuilder: (BuildContext context, int index) {
-                      User member = default_groups[selected_index].members[index];
+                      User member = default_groups[selected_group_index].members[index];
                       return MemberItem(
                         // dp: group.,
                         name: member.name,
@@ -628,7 +625,7 @@ class MainViewState extends State<MainView>  {
                           await new Future.delayed(const Duration(seconds: 2));
                           Navigator.pop(context);
                           setState(() {
-                            default_groups[selected_index].members.removeAt(index);
+                            default_groups[selected_group_index].members.removeAt(index);
                           });
                         }
                       );

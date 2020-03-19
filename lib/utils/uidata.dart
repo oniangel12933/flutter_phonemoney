@@ -9,11 +9,8 @@ class UIData {
   static const String loginRoute = "/login";
   static const String signupRoute = "/signup";
   static const String homeRoute = "/main";
-  static const String groupRoute = "/group";
-  static const String groupAddRoute = "/add group";
-  static const String friendRoute = "/friend";
-  static const String friendAddRoute = "/add friend";
-  static const String settingRoute = "/setting";
+  static const String donateRoute = "/donate";
+  static const String accountRoute = "/account";
 
   //strings
   static const String appName = "Group Money";

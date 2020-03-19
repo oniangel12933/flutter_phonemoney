@@ -38,9 +38,10 @@ secureTextField(TextEditingController controller, bool obscureText, TextInputTyp
   )
 ));
 
-borderedTextField(TextEditingController controller, TextInputType keyboardType, bool multiLineEnable, String label, double padding) => new Container(
+borderedTextField(TextEditingController controller, TextInputType keyboardType, bool multiLineEnable, String label, double padding, Function action) => new Container(
   padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: padding),
   child: new TextField( 
+    onChanged: action,
     controller: controller,
     keyboardType: keyboardType,
     maxLines: multiLineEnable ? null : 1,

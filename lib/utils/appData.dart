@@ -6,7 +6,8 @@ import 'package:flutter/material.dart';
 
 
 var app_status_index = 0;
-var selected_index = 0;
+var selected_group_index = 0;
+var selected_contribute_index = 0;
 
 Random random = Random();
 
@@ -82,6 +83,18 @@ class Report {
         this.created_user);
 }
 
+class Donate {
+  
+  User user;
+  String amount;
+  String time;
+
+  Donate(this.user,
+        this.amount,
+        this.time);
+
+}
+
 enum ReportType {
   member_add,
   contribute_creat,
@@ -94,6 +107,7 @@ List<User> default_users;
 List<Group> default_groups;
 List<Contribute> default_contributes;
 List<Report> default_reports;
+List<Donate> default_donates;
 
 class CustomPopupMenu {
   CustomPopupMenu({this.title, this.icon});
@@ -111,6 +125,11 @@ List<CustomPopupMenu> group_menu_list = <CustomPopupMenu>[
 List<CustomPopupMenu> member_menu_list = <CustomPopupMenu>[
   CustomPopupMenu(title: 'New Contribute', icon: Icons.home),
   CustomPopupMenu(title: 'New Member', icon: Icons.bookmark),
+];
+
+List<CustomPopupMenu> donate_menu_list = <CustomPopupMenu>[
+  CustomPopupMenu(title: 'View Beneficiary', icon: Icons.home),
+  CustomPopupMenu(title: 'Request Settlement', icon: Icons.bookmark),
 ];
 
 
@@ -155,3 +174,5 @@ List details = [
   "Let's make a UI serie.",
   "Can i hear your voice?",
 ];
+
+Function textFieldNull() {}
