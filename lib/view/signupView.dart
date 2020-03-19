@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
-
 import '../utils/functions.dart';
-import 'loginView.dart';
 import '../utils/components.dart';
+import '../utils/uiData.dart';
 
 class SignupView extends StatelessWidget {
   
@@ -29,15 +28,15 @@ class SignupView extends StatelessWidget {
       children: <Widget>[
         mainHeader(), 
         SizedBox(height: 10),
-        loginTextField(user_name_in, false, TextInputType.emailAddress, "Full Name"),         
+        borderedTextField(user_name_in, TextInputType.emailAddress, false, "User Name", UIData.largePadding),         
         SizedBox(height: 30),
-        loginTextField(user_phone_in, false, TextInputType.emailAddress, "Phone Number"),
+        borderedTextField(user_phone_in, TextInputType.number, false, "Phone Number", UIData.largePadding),   
         SizedBox(height: 30),
-        loginTextField(user_pwd_in, true, TextInputType.emailAddress, "Password"),
+        secureTextField(user_pwd_in, true, TextInputType.emailAddress, "Password", UIData.largePadding),
         SizedBox(height: 30),
-        loginTextField(user_pwd_confirm_in, true, TextInputType.emailAddress, "Confirm Password"),
+        secureTextField(user_pwd_confirm_in, true, TextInputType.emailAddress, "Confirm Password", UIData.largePadding),
         SizedBox(height: 30),
-        roundColorButton("Sign Up", Colors.grey[200], Colors.black, 30, () => {signup(context)}),
+        roundColorButton("Sign Up", double.infinity, Colors.grey[200], Colors.black, 30, () => {signup(context)}),
         SizedBox(height: 30.0),
         clickLable(" Do you already have an account? Sign In", Colors.black38, () => {
           Navigator.pop(context)

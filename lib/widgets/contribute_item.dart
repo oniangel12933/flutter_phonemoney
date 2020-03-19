@@ -1,30 +1,34 @@
 import 'package:flutter/material.dart';
 import 'package:moneygroup/utils/uidata.dart';
+// import 'package:social_app_ui/screens/conversation.dart';
+import '../view/signupView.dart';
 
 
-class GroupItem extends StatefulWidget {
+class ContributeItem extends StatefulWidget {
 
-  final String name;
+  final String title;
   final String description;
-  final String number_of_members;
+  final String created_time;
+  final String current_amount;
   final bool isOnLine;
   final Function action;
 
-  GroupItem({
+  ContributeItem({
     Key key,
     // @required this.dp,
-    @required this.name,
+    @required this.title,
     @required this.description,
-    @required this.number_of_members,
+    @required this.created_time,
+    @required this.current_amount,
     @required this.isOnLine,
     @required this.action,
   }) : super(key: key);
 
   @override
-  _GroupItemState createState() => _GroupItemState();
+  _ContributeItemState createState() => _ContributeItemState();
 }
 
-class _GroupItemState extends State<GroupItem> {
+class _ContributeItemState extends State<ContributeItem> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -80,7 +84,7 @@ class _GroupItemState extends State<GroupItem> {
         ),
 
         title: Text(
-          "${widget.name}",
+          "${widget.title}",
           style: TextStyle(
             fontWeight: FontWeight.bold,
           ),
@@ -90,30 +94,23 @@ class _GroupItemState extends State<GroupItem> {
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
             SizedBox(height: 5),
-            widget.number_of_members == 0
-                ?SizedBox()
-                :Container(
-              padding: EdgeInsets.all(1),
-              decoration: BoxDecoration(
-                color: Colors.green,
-                borderRadius: BorderRadius.circular(6),
+            Text(
+              "${widget.created_time}",
+              style: TextStyle(
+                color: Colors.grey,
+                fontSize: 12,
               ),
-              constraints: BoxConstraints(
-                minWidth: 11,
-                minHeight: 11,
-              ),
-              child: Padding(
-                padding: EdgeInsets.only(top: 1, left: 5, right: 5),
-                child:Text(
-                  "${widget.number_of_members}",
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 12,
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-              ),
+              textAlign: TextAlign.right,
             ),
+            SizedBox(height: 5),
+            Text(
+              "Total \$${widget.current_amount}",
+                style: TextStyle(
+                  color: Colors.green,
+                  fontSize: 12,
+                ),
+                textAlign: TextAlign.right,
+              ),
             
           ],
         ),

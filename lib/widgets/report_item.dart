@@ -1,30 +1,31 @@
 import 'package:flutter/material.dart';
-import 'package:moneygroup/utils/uidata.dart';
+import '../utils/appData.dart';
+import '../utils/uiData.dart';
 
 
-class GroupItem extends StatefulWidget {
+class ReportItem extends StatefulWidget {
 
   final String name;
-  final String description;
-  final String number_of_members;
+  final ReportType type;
+  final String optional_val;
+  final String created_time;
   final bool isOnLine;
-  final Function action;
 
-  GroupItem({
+  ReportItem({
     Key key,
     // @required this.dp,
     @required this.name,
-    @required this.description,
-    @required this.number_of_members,
-    @required this.isOnLine,
-    @required this.action,
+    @required this.type,
+    @required this.optional_val,
+    @required this.created_time,
+    @required this.isOnLine
   }) : super(key: key);
 
   @override
-  _GroupItemState createState() => _GroupItemState();
+  _ReportItemState createState() => _ReportItemState();
 }
 
-class _GroupItemState extends State<GroupItem> {
+class _ReportItemState extends State<ReportItem> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -85,27 +86,27 @@ class _GroupItemState extends State<GroupItem> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        subtitle: Text("${widget.description}"),
+        subtitle: Text(widget.optional_val),
         trailing: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
             SizedBox(height: 5),
-            widget.number_of_members == 0
+            widget.type != ReportType.contribute_end
                 ?SizedBox()
                 :Container(
               padding: EdgeInsets.all(1),
               decoration: BoxDecoration(
-                color: Colors.green,
+                color: Colors.red,
                 borderRadius: BorderRadius.circular(6),
               ),
               constraints: BoxConstraints(
-                minWidth: 11,
+                minWidth: 13,
                 minHeight: 11,
               ),
               child: Padding(
                 padding: EdgeInsets.only(top: 1, left: 5, right: 5),
                 child:Text(
-                  "${widget.number_of_members}",
+                  "Ended",
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 12,
@@ -114,10 +115,16 @@ class _GroupItemState extends State<GroupItem> {
                 ),
               ),
             ),
-            
+            SizedBox(height: 10),
+            Text(
+              "${widget.created_time}",
+              style: TextStyle(
+                fontWeight: FontWeight.w300,
+                fontSize: 11,
+              ),
+            ),
           ],
         ),
-        onTap: widget.action
       ),
     );
   }
