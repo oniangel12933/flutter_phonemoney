@@ -29,14 +29,23 @@ class MainViewState extends State<MainView>  {
       setState(() {
         _selectedMenu = choice;
         switch (_selectedMenu.title) {
-          case "New Group": 
+          case UIData.menuNewGroup: 
             createGroupAlert();
             break;
-          case "New Contribute":
+          
+          case UIData.menuAccount:
+            Navigator.pushNamed(context, UIData.accountRoute);
+            break;
+
+          case UIData.menuLogOut:
+            Navigator.popUntil(context, ModalRoute.withName(UIData.loginRoute)); 
+            break;
+
+          case UIData.menuNewContribute:
             createContributeAlert();
             break;
 
-          case "New Member":
+          case UIData.menuNewMember:
             createMemberAlert();
             break;
 
@@ -107,7 +116,7 @@ class MainViewState extends State<MainView>  {
                     }
                   }
                   else {
-                    Contribute new_contribute = Contribute("", names[random.nextInt(10)], details[random.nextInt(10)], "${random.nextInt(900)}", "0", "2020-03-25", "2020-03-29", new_contribute_beneficiary_name.text, new_contribute_beneficiary_number.text, User("", names[random.nextInt(10)], phones[random.nextInt(10)], true));
+                    Contribute new_contribute = Contribute("", names[random.nextInt(10)], details[random.nextInt(10)], "${random.nextInt(900)}", "0", "2020-03-25", "2020-03-29", names[random.nextInt(10)], phones[random.nextInt(10)], User("", names[random.nextInt(10)], phones[random.nextInt(10)], true));
                     if (default_contributes == null || default_contributes.length == 0) {
                         default_contributes = [new_contribute];
                     }
@@ -154,7 +163,8 @@ class MainViewState extends State<MainView>  {
         length: 2,
         child: Scaffold(
           appBar: AppBar(  
-            backgroundColor: Colors.black,        
+            backgroundColor: Colors.black, 
+            automaticallyImplyLeading: false,       
             title: TabBar(
               labelColor: Colors.white,
               tabs: <Widget>[

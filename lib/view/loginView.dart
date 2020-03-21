@@ -42,7 +42,8 @@ class LoginView extends StatelessWidget {
   Function normalLogin(BuildContext context) {    
     
     app_status_index = 0;
-    Navigator.of(context, rootNavigator: true).pushReplacementNamed(UIData.homeRoute);
+    // Navigator.of(context, rootNavigator: true).pushReplacementNamed(UIData.homeRoute);
+    Navigator.pushNamed(context, UIData.homeRoute);
     /*
     if (user_name_in.text == '' || user_pwd_in.text == '') {
       Alert(

@@ -21,6 +21,16 @@ class UIData {
   static const String quickFont = "Quicksand";
   static const String ralewayFont = "Raleway";
 
+  //menus
+  static const String menuNewGroup = "New Group";
+  static const String menuAccount = "Account";
+  static const String menuLogOut = "Log Out";
+  static const String menuNewContribute = "New Contribute";
+  static const String menuNewMember = "New Member";
+  static const String menuViewBeneficiary = "View Beneficiary";
+  static const String menuRequestSettlement = "Request Setlement";
+
+
   //images
   static const String default_profile = "assets/non_profile.png";
 

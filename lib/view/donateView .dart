@@ -42,11 +42,12 @@ class DonateViewState extends State<DonateView>  {
       setState(() {
         _selectedMenu = choice;
         switch (_selectedMenu.title) {
-          case "View Beneficary": 
-            // createGroupAlert();
+          case UIData.menuViewBeneficiary: 
+            beneficiaryViewAlert();
             break;
 
           default:
+            settleRequestAlert();
             break;
         }
       });
@@ -212,8 +213,181 @@ class DonateViewState extends State<DonateView>  {
                     )),
           color: Colors.yellow,
         )),
-          SizedBox(height: 50,)]
+          SizedBox(height: 30,)]
   );
+
+  beneficiaryViewAlert() => showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+            borderRadius:
+                BorderRadius.circular(12.0)), //this right here
+        child: Container(
+          height: 280,
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              // crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+
+                Text("Beneficiary", style: TextStyle(fontWeight: FontWeight.w500, color: Colors.blue,fontSize: 25)),
+                SizedBox(height: 30),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Icon(Icons.content_paste, color: Colors.grey, size: 20,),
+                    SizedBox(width: 10),
+                    Text("MTN Mobile Money", style: TextStyle(fontSize: 15),),
+                  ],
+                ),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Icon(Icons.person, color: Colors.grey, size: 20,),
+                    SizedBox(width: 10),
+                    Text(default_contributes[selected_contribute_index].beneficiary_name, style: TextStyle(fontSize: 15),),
+                  ],
+                ),
+                SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: <Widget>[
+                    Icon(Icons.phone_iphone, color: Colors.grey, size: 20,),
+                    SizedBox(width: 10),
+                    Text(default_contributes[selected_contribute_index].beneficiary_number, style: TextStyle(fontSize: 15),),
+                  ],
+                ),
+                SizedBox(height: 30),
+                roundColorButton("Done", 140,Colors.red, Colors.black, 10, () {})
+              ],
+            ),
+          ),
+        ),
+      );
+    });
+
+    settleRequestAlert() => showDialog(
+        context: context,
+        builder: (BuildContext context) {
+          return Dialog(
+            shape: RoundedRectangleBorder(
+                borderRadius:
+                    BorderRadius.circular(12.0)), //this right here
+            child: Container(
+              height: 340,
+              child: Padding(
+                padding: const EdgeInsets.all(20.0),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  // crossAxisAlignment: CrossAxisAlignment.end,
+                  children: [
+
+                    Text("Request Settlement", style: TextStyle(fontWeight: FontWeight.w500, color: Colors.blue,fontSize: 25)),
+                    SizedBox(height: 30),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Icon(Icons.content_paste, color: Colors.grey, size: 20,),
+                        SizedBox(width: 10),
+                        Text("MTN Mobile Money", style: TextStyle(fontSize: 15),),
+                      ],
+                    ),
+                    SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Icon(Icons.person, color: Colors.grey, size: 20,),
+                        SizedBox(width: 10),
+                        Text(default_contributes[selected_contribute_index].beneficiary_name, style: TextStyle(fontSize: 15),),
+                      ],
+                    ),
+                    SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Icon(Icons.phone_iphone, color: Colors.grey, size: 20,),
+                        SizedBox(width: 10),
+                        Text(default_contributes[selected_contribute_index].beneficiary_number, style: TextStyle(fontSize: 15),),
+                      ],
+                    ),
+                    SizedBox(height: 20),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      children: <Widget>[
+                        Icon(FontAwesomeIcons.paperPlane, color: Colors.grey, size: 20,),
+                        SizedBox(width: 10),
+                        Text(default_contributes[selected_contribute_index].current_amount, style: TextStyle(fontSize: 15),),
+                      ],
+                    ),
+                    SizedBox(height: 30),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: <Widget>[     
+                        Icon(
+                          Icons.warning,
+                         color: Colors.grey, size: 15,),                   
+                        Text("This end this contribution", style: TextStyle(fontSize: 13),),
+                        SizedBox(width: 10),
+                        roundColorButton("Confirm", 100,Colors.blue, Colors.white, 10, () 
+                          async {                  
+                            showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return Center(child: CircularProgressIndicator(),);
+                                });
+                            await new Future.delayed(const Duration(seconds: 2));
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                            beneficiaryEndedAlert();
+                            }),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          );
+        });
+
+    beneficiaryEndedAlert() => showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return Dialog(
+        shape: RoundedRectangleBorder(
+            borderRadius:
+                BorderRadius.circular(12.0)), //this right here
+        child: Container(
+          height: 280,
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              // crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+
+                Text("Congratulation", style: TextStyle(fontWeight: FontWeight.w500, color: Colors.blue,fontSize: 25)),
+                SizedBox(height: 30),
+                Text("\$${default_contributes[selected_contribute_index].current_amount} paid out to ${default_contributes[selected_contribute_index].beneficiary_name}", style: TextStyle(fontSize: 15),),
+                SizedBox(height: 20),
+                Text("${default_contributes[selected_contribute_index].beneficiary_number}", style: TextStyle(fontSize: 15),),
+                SizedBox(height: 20),
+                Text("Fee : \$${double.parse(default_contributes[selected_contribute_index].current_amount) * 0.01}", style: TextStyle(fontSize: 15),),
+                SizedBox(height: 30),
+                roundColorButton("Done", 140,Colors.red, Colors.black, 10, () {
+                  Navigator.pop(context);
+                  Navigator.pop(context);
+                })
+              ],
+            ),
+          ),
+        ),
+      );
+    });
+
 
 }
 
@@ -259,7 +433,6 @@ class DonateInViewState extends State<DonateInView> {
         Text("Fee : \$${double.parse(this.widget.donateAmount) * 0.01}", style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black54,fontSize: 13),textAlign: TextAlign.center,),
         SizedBox(height: 10),
         Text("Total : \$${double.parse(this.widget.donateAmount) * 1.01}", style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black54,fontSize: 13),textAlign: TextAlign.center),
-        SizedBox(height: 30,),
         Container(
             alignment: Alignment.center,
             width: double.maxFinite,
@@ -277,7 +450,33 @@ class DonateInViewState extends State<DonateInView> {
                       },
                   )).toList(),
               ),
-         ),   
+         ), 
+        SizedBox(height: 15),
+        GestureDetector(
+          onTap: () => {Navigator.pushNamed(context, UIData.accountRoute)},
+          child:
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                SizedBox(width: 30,),                        
+                Container(
+                    child: Icon(Icons.add_circle_outline,
+                    color: Colors.grey),
+                    decoration: new BoxDecoration(
+                      color: const Color(0xFFFFFFFF), // border color
+                      shape: BoxShape.circle,
+                      border: new Border.all(
+                        width: 2.0,
+                        color: Colors.grey[200],
+                      ),
+                    )
+                  ),
+                SizedBox(width: 10,),
+                Text("Add PhoneNumber", style: TextStyle(fontWeight: FontWeight.w500, color: Colors.black54,fontSize: 15))
+              ],
+            )
+          ),
+        SizedBox(height: 20,),
         
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,

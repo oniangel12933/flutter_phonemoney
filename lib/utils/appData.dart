@@ -3,6 +3,7 @@ import 'dart:math';
 import 'dart:ui';
 
 import 'package:flutter/material.dart';
+import 'package:moneygroup/utils/uiData.dart';
 
 
 var app_status_index = 0;
@@ -117,19 +118,19 @@ class CustomPopupMenu {
 }
 
 List<CustomPopupMenu> group_menu_list = <CustomPopupMenu>[
-  CustomPopupMenu(title: 'New Group', icon: Icons.home),
-  CustomPopupMenu(title: 'Account', icon: Icons.bookmark),
-  CustomPopupMenu(title: 'Log Out', icon: Icons.settings),
+  CustomPopupMenu(title: UIData.menuNewGroup, icon: Icons.home),
+  CustomPopupMenu(title: UIData.menuAccount, icon: Icons.bookmark),
+  CustomPopupMenu(title: UIData.menuLogOut, icon: Icons.settings),
 ];
 
 List<CustomPopupMenu> member_menu_list = <CustomPopupMenu>[
-  CustomPopupMenu(title: 'New Contribute', icon: Icons.home),
-  CustomPopupMenu(title: 'New Member', icon: Icons.bookmark),
+  CustomPopupMenu(title: UIData.menuNewContribute, icon: Icons.home),
+  CustomPopupMenu(title: UIData.menuNewMember, icon: Icons.bookmark),
 ];
 
 List<CustomPopupMenu> donate_menu_list = <CustomPopupMenu>[
-  CustomPopupMenu(title: 'View Beneficiary', icon: Icons.home),
-  CustomPopupMenu(title: 'Request Settlement', icon: Icons.bookmark),
+  CustomPopupMenu(title: UIData.menuViewBeneficiary, icon: Icons.home),
+  CustomPopupMenu(title: UIData.menuRequestSettlement, icon: Icons.bookmark),
 ];
 
 
