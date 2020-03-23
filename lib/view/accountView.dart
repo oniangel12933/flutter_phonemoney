@@ -153,7 +153,7 @@ class AccountViewState extends State<AccountView>  {
 
                 Text("Add Phone Number", style: TextStyle(fontWeight: FontWeight.w500, color: Colors.blue,fontSize: 25)),
                 SizedBox(height: 30),
-                borderedTextField(new_phone, TextInputType.text, false, "Phone Number", UIData.smallPadding, textFieldNull()), 
+                borderedTextField(new_phone, TextInputType.number, false, "Phone Number", UIData.smallPadding, textFieldNull()), 
                 SizedBox(height: 30,),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
