@@ -1,10 +1,9 @@
-import 'package:flutter/material.dart';
-import 'package:moneygroup/utils/uidata.dart';
-import 'package:rflutter_alert/rflutter_alert.dart';
+import 'dart:ffi';
 
-import '../utils/functions.dart';
+import 'package:flutter/material.dart';
+import '../utils/uiData.dart';
+import '../utils/appData.dart';
 import '../utils/components.dart';
-import 'signupView.dart';
 
 class LoginView extends StatelessWidget {
 
@@ -24,12 +23,12 @@ class LoginView extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
         mainHeader(), 
-        SizedBox(height: 10),
-        loginTextField(user_name_in, false, TextInputType.emailAddress, "User name or Email"),         
+        SizedBox(height: 10),        
+        borderedTextField(user_name_in, TextInputType.number, false, "Phone Number", UIData.largePadding, textFieldNull()), 
         SizedBox(height: 30),
-        loginTextField(user_pwd_in, true, TextInputType.emailAddress, "Password"),
+        secureTextField(user_pwd_in, true, TextInputType.emailAddress, "Password", UIData.largePadding),
         SizedBox(height: 50),
-        roundColorButton("Login", Colors.grey[200], Colors.black, 30, () => {normalLogin(context)}),
+        roundColorButton("Login", double.infinity, Colors.grey[200], Colors.black, 30, () => {normalLogin(context)}),
         SizedBox(height: 20),
         clickLable("Don`t you have an account? Sign Up", Colors.black38, () => {
           Navigator.pushNamed(context, UIData.signupRoute)
@@ -38,9 +37,13 @@ class LoginView extends StatelessWidget {
     )
   );
 
+  
+
   Function normalLogin(BuildContext context) {    
     
-    Navigator.of(context, rootNavigator: true).pushReplacementNamed(UIData.homeRoute);
+    app_status_index = 0;
+    // Navigator.of(context, rootNavigator: true).pushReplacementNamed(UIData.homeRoute);
+    Navigator.pushNamed(context, UIData.homeRoute);
     /*
     if (user_name_in.text == '' || user_pwd_in.text == '') {
       Alert(

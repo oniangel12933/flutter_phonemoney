@@ -19,35 +19,51 @@ mainHeader() => Column(
     ],
   );
 
-loginTextField(TextEditingController controller, bool obscureText, TextInputType keyboardType, String label ) => Container(
-  
-  padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: 30.0),
-  child: TextField(
-      controller: controller,
-      obscureText: obscureText,
-      keyboardType: keyboardType,
-      // maxLength: 19,
-      style: TextStyle(
-          color: Colors.black),
-      decoration: InputDecoration(
-          labelText: label,
-          labelStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
-          border: OutlineInputBorder(
-            borderRadius: const BorderRadius.all(
-              const Radius.circular(6.0),
-          ),),
-      ),
-    ),
-);
-
-
-roundColorButton(String label, Color buttonColor, Color labelColor, double padding, Function action) => Container(
- 
+secureTextField(TextEditingController controller, bool obscureText, TextInputType keyboardType, String label, double padding) => new Container(
   padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: padding),
-  width: double.infinity,
+  child: new TextField( 
+    controller: controller,
+    obscureText: true,
+    keyboardType: TextInputType.text,
+
+    decoration: new InputDecoration(
+      // hintText: 'Type here about new group',
+      labelText: label,
+      labelStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+      enabledBorder: const OutlineInputBorder(
+        // width: 0.0 produces a thin "hairline" border
+        borderSide: const BorderSide(color: Colors.grey, width: 1.0),
+      ),
+      border: const OutlineInputBorder(),
+  )
+));
+
+borderedTextField(TextEditingController controller, TextInputType keyboardType, bool multiLineEnable, String label, double padding, Function action) => new Container(
+  padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: padding),
+  child: new TextField( 
+    onChanged: action,
+    controller: controller,
+    keyboardType: keyboardType,
+    maxLines: multiLineEnable ? null : 1,
+    decoration: new InputDecoration(
+      // hintText: 'Type here about new group',
+      labelText: label,
+      labelStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+      enabledBorder: const OutlineInputBorder(
+        // width: 0.0 produces a thin "hairline" border
+        borderSide: const BorderSide(color: Colors.grey, width: 1.0),
+      ),
+      border: const OutlineInputBorder(),
+  )
+));
+
+roundColorButton(String label, double width, Color buttonColor, Color labelColor, double padding, Function action) => Container(
+  padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: padding),
+  width: width,
   child: RaisedButton(
     padding: EdgeInsets.all(12.0),
     shape: StadiumBorder(),
+    disabledColor: Colors.blue,
     child: new GestureDetector(
       onTap: action,
       child: Text(

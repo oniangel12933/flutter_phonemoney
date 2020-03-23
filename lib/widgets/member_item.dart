@@ -1,33 +1,32 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:moneygroup/utils/uidata.dart';
 // import 'package:social_app_ui/screens/conversation.dart';
 import '../view/signupView.dart';
 
 
-class FriendItem extends StatefulWidget {
+class MemberItem extends StatefulWidget {
 
   // final String dp;
   final String name;
   final String phoneNumber;
   final bool isOnline;
-  final bool visableInvite;
   final Function action; 
 
-  FriendItem({
+  MemberItem({
     Key key,
     // @required this.dp,
     @required this.name,
     @required this.phoneNumber,
     @required this.isOnline,
-    @required this.visableInvite,
     @required this.action,
   }) : super(key: key);
 
   @override
-  _FriendItemState createState() => _FriendItemState();
+  _MemberItemState createState() => _MemberItemState();
 }
 
-class _FriendItemState extends State<FriendItem> {
+class _MemberItemState extends State<MemberItem> {
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -89,16 +88,31 @@ class _FriendItemState extends State<FriendItem> {
           ),
         ),
         subtitle: Text("${widget.phoneNumber}"),
-        trailing: widget.visableInvite ? FlatButton(
-                child: Text(
-                  "Invite",
-                  style: TextStyle(
-                    color: Colors.white,
-                  ),
+        trailing: Column(
+          mainAxisAlignment: MainAxisAlignment.end,
+          children: <Widget>[
+            SizedBox(
+            width: 110, // constrain height
+            child: FlatButton(          
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: <Widget>[                    
+                    Icon(FontAwesomeIcons.trashAlt, size: 15, color: Colors.red,),
+                    SizedBox(width: 5,),
+                    Text(
+                      "remove",
+                      style: TextStyle(
+                        color: Colors.black87,fontSize: 15
+                      ),
+                    ),
+                  ],
                 ),
-                color: Colors.green[300],
                 onPressed: widget.action,
-              ) : FlatButton(),
+              ),
+            )
+            
+          ],
+        ),
         onTap: widget.action
       ),
     );
