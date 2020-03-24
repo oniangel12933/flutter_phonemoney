@@ -6,6 +6,21 @@ import 'package:flutter/material.dart';
 import 'package:moneygroup/utils/uiData.dart';
 
 
+class AppData {
+  
+  /// strings
+  static const String baseURL = "https://dev.mywebsite.cm/apis.php?action=";
+  static const String loginApi = "login";
+  static const String signupApi = "register";
+  static const String createGroupApi = "creategroup";
+  static const String createContributeApi = "createcontribute";
+  static const String addMemberApi = "addmember";
+  static const String addPhoneApi = "addphone";
+
+  /// user datas
+  static User user_info;
+}
+
 var app_status_index = 0;
 var selected_group_index = 0;
 var selected_contribute_index = 0;
@@ -13,35 +28,47 @@ var selected_contribute_index = 0;
 Random random = Random();
 
 class Group {
-  String id;
-  String title;
-  String description;
-  String number_of_members;
-  String created_time;
-  User created_user;
-  List<User> members;
-  List<Contribute> contributes;
+  final String id;
+  final User created_user_id;
+  final String title;
+  final String description;
+  final String created_time;
+  final String number_of_members;
 
   Group(this.id,
+      this.created_user_id,
       this.title,
       this.description,
-      this.number_of_members,
       this.created_time,
-      this.created_user,
-      this.members,
-      this.contributes);
+      this.number_of_members);
+  
+  Group.fromJson(Map<String, dynamic> json)
+      : id = json['group_id'],
+        created_user_id = json['created_user_id'],
+        title = json['title'],
+        description = json['description'],
+        created_time = json['created_time'],
+        number_of_members = json['number_of_members'];
 }
 
 class User {
-  String id;
-  String name;
-  String phoneNumber;
+  final String id;
+  final String name;
+  final String mainPhone;
+  final String otherPhones;
   bool isOnLine;
 
   User(this.id,
       this.name,
-      this.phoneNumber,
+      this.mainPhone,
+      this.otherPhones,
       this.isOnLine);
+
+  User.fromJson(Map<String, dynamic> json)
+      : id = json['id'],
+        name = json['name'],
+        mainPhone = json['main_phone'],
+        otherPhones = json['other_phones'];
 }
 
 class Contribute {

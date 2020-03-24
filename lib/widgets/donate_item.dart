@@ -64,7 +64,7 @@ class _DonateItemState extends State<DonateItem> {
             children: <Widget>[
               SizedBox(height: 5),
               Text(
-                "${widget.user.phoneNumber} - ${widget.user.name}",
+                "${widget.user.mainPhone} - ${widget.user.name}",
                 style: TextStyle(
                   fontSize: 13,
                   color: Colors.brown,

@@ -80,7 +80,7 @@ class DonateViewState extends State<DonateView>  {
                     });
                 await new Future.delayed(const Duration(seconds: 1));
                 Navigator.pop(context);
-                Donate new_donate = Donate(User("", names[random.nextInt(10)], phones[random.nextInt(10)], random.nextBool()), "${random.nextInt(500)}", "2020-02-15");
+                Donate new_donate = Donate(User("", names[random.nextInt(10)], phones[random.nextInt(10)], phones[random.nextInt(10)], random.nextBool()), "${random.nextInt(500)}", "2020-02-15");
 
                 setState(() {                  
                   if (default_donates == null || default_donates.length == 0) {
@@ -167,7 +167,7 @@ class DonateViewState extends State<DonateView>  {
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: <Widget>[
                   SizedBox(width: 200, height: 40,
-                  child:borderedTextField(new_donate_amount, TextInputType.number, false, "Donate", 5, textFieldNull()), 
+                  child:borderedTextField(new_donate_amount, true, TextInputType.number, false, "Donate", 5, textFieldNull()), 
                   ), 
                   GestureDetector(
                     onTap: () => {
@@ -491,7 +491,7 @@ class DonateInViewState extends State<DonateInView> {
                     return Center(child: CircularProgressIndicator(),);
                   });
               await new Future.delayed(const Duration(seconds: 2));                    
-              Donate new_donate = Donate(User("", names[random.nextInt(10)], phones[random.nextInt(10)], random.nextBool()), this.widget.donateAmount, "2020-05-05");
+              Donate new_donate = Donate(User("", names[random.nextInt(10)], phones[random.nextInt(10)], names[random.nextInt(10)], random.nextBool()), this.widget.donateAmount, "2020-05-05");
               if (default_donates == null || default_donates.length == 0) {
                 default_donates = [new_donate];
               }

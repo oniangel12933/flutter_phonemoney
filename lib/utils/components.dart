@@ -19,7 +19,7 @@ mainHeader() => Column(
     ],
   );
 
-secureTextField(TextEditingController controller, bool obscureText, TextInputType keyboardType, String label, double padding) => new Container(
+secureTextField(TextEditingController controller, bool inputStatus, bool obscureText, TextInputType keyboardType, String label, double padding) => new Container(
   padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: padding),
   child: new TextField( 
     controller: controller,
@@ -29,7 +29,7 @@ secureTextField(TextEditingController controller, bool obscureText, TextInputTyp
     decoration: new InputDecoration(
       // hintText: 'Type here about new group',
       labelText: label,
-      labelStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+      labelStyle: TextStyle(fontWeight: FontWeight.bold, color: inputStatus ? Colors.black : Colors.red),
       enabledBorder: const OutlineInputBorder(
         // width: 0.0 produces a thin "hairline" border
         borderSide: const BorderSide(color: Colors.grey, width: 1.0),
@@ -38,7 +38,7 @@ secureTextField(TextEditingController controller, bool obscureText, TextInputTyp
   )
 ));
 
-borderedTextField(TextEditingController controller, TextInputType keyboardType, bool multiLineEnable, String label, double padding, Function action) => new Container(
+borderedTextField(TextEditingController controller, bool inputStatus, TextInputType keyboardType, bool multiLineEnable, String label, double padding, Function action) => new Container(
   padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: padding),
   child: new TextField( 
     onChanged: action,
@@ -48,7 +48,7 @@ borderedTextField(TextEditingController controller, TextInputType keyboardType, 
     decoration: new InputDecoration(
       // hintText: 'Type here about new group',
       labelText: label,
-      labelStyle: TextStyle(fontWeight: FontWeight.bold, color: Colors.black),
+      labelStyle: TextStyle(fontWeight: FontWeight.bold, color: inputStatus ? Colors.black : Colors.red),
       enabledBorder: const OutlineInputBorder(
         // width: 0.0 produces a thin "hairline" border
         borderSide: const BorderSide(color: Colors.grey, width: 1.0),
@@ -103,7 +103,24 @@ alertStyle() => AlertStyle(
   ),
 );
 
-
+showAlert(BuildContext context, AlertType type, String message, String btnLabel, Function action) => Alert(
+            context: context,
+            style: alertStyle(),
+            type: type,
+            title: UIData.appName,
+            desc: message,
+            buttons: [
+              DialogButton(
+                child: Text(
+                  btnLabel,
+                  style: TextStyle(color: Colors.white, fontSize: 15),
+                ),
+                onPressed: action,
+                width: 120,
+                height: 40,
+              )
+            ],
+          ).show();
 class MyUIData {
   static int home_selected_index = 0;
 }

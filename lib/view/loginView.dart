@@ -1,14 +1,20 @@
-import 'dart:ffi';
-
 import 'package:flutter/material.dart';
+import 'package:rflutter_alert/rflutter_alert.dart';
 import '../utils/uiData.dart';
 import '../utils/appData.dart';
+import '../utils/functions.dart';
 import '../utils/components.dart';
 
-class LoginView extends StatelessWidget {
+class LoginView extends StatefulWidget {
+  @override
+  LoginViewState createState() => LoginViewState();
+}
+class LoginViewState extends State<LoginView> {
 
-  final user_name_in = TextEditingController();
+  final user_phone_in = TextEditingController();
   final user_pwd_in = TextEditingController();
+  bool user_phone_status = true;
+  bool user_pwd_status = true;
 
   @override
   Widget build(BuildContext context) {
@@ -24,9 +30,9 @@ class LoginView extends StatelessWidget {
       children: <Widget>[
         mainHeader(), 
         SizedBox(height: 10),        
-        borderedTextField(user_name_in, TextInputType.number, false, "Phone Number", UIData.largePadding, textFieldNull()), 
+        borderedTextField(user_phone_in, user_phone_status, TextInputType.number, false, "Phone Number", UIData.largePadding, textFieldNull()), 
         SizedBox(height: 30),
-        secureTextField(user_pwd_in, true, TextInputType.emailAddress, "Password", UIData.largePadding),
+        secureTextField(user_pwd_in, user_pwd_status, true, TextInputType.emailAddress, "Password", UIData.largePadding),
         SizedBox(height: 50),
         roundColorButton("Login", double.infinity, Colors.grey[200], Colors.black, 30, () => {normalLogin(context)}),
         SizedBox(height: 20),
@@ -41,99 +47,54 @@ class LoginView extends StatelessWidget {
 
   Function normalLogin(BuildContext context) {    
     
-    app_status_index = 0;
-    // Navigator.of(context, rootNavigator: true).pushReplacementNamed(UIData.homeRoute);
-    Navigator.pushNamed(context, UIData.homeRoute);
-    /*
-    if (user_name_in.text == '' || user_pwd_in.text == '') {
-      Alert(
-            context: context,
-            style: alertStyle(),
-            type: AlertType.warning,
-            title: "Warning",
-            desc: "Please fill all parameters",
-            buttons: [
-              DialogButton(
-                child: Text(
-                  "Close",
-                  style: TextStyle(color: Colors.white, fontSize: 15),
-                ),
-                onPressed: () => Navigator.pop(context),
-                width: 120,
-                height: 40,
-              )
-            ],
-          ).show();
+    if (user_phone_in.text == "")  {
+      user_phone_status = false;
+    } 
+    else {
+      user_phone_status = true;
+    }
+    if (user_pwd_in.text == "")  {
+      user_pwd_status = false;
     }
     else {
+      user_pwd_status = true;
+    }
+
+    setState(() {});
+
+    if (user_phone_status && user_pwd_status) {
       var params = {
-        'email': user_name_in.text, 
-        'password': user_pwd_in.text,
-        'device_token':''};
+        'phone_number': user_phone_in.text,
+        'password': user_pwd_in.text};
+
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Center(child: CircularProgressIndicator(),);
+          });
                       
-      postApiCall(params, 
-        "http://placetracker.net/RestAPIs/loginRequest").then((value) {
+      postApiCall(params, AppData.baseURL + AppData.loginApi).then((value) {
           // Run extra code here
           
           if (value['status'] as bool)
           {
-            Alert(
-              context: context,
-              style: alertStyle(),
-              type: AlertType.info,
-              title: "Success",
-              desc: value['message'] as String,
-              buttons: [
-                DialogButton(
-                  child: Text(
-                    "Close",
-                    style: TextStyle(color: Colors.white, fontSize: 15),
-                  ),
-                  onPressed: () => {
-                    // Navigator.pushNamedAndRemoveUntil(context, '/home', (_) => false),
-                    // Navigator.pushNamed(context, '/home', arguments: ScreenArguments(user_name_in.text, user_pwd_in.text)),
-                    // Navigator.of(context, rootNavigator: true).pushReplacementNamed('/home', arguments: user_name_in.text)
-                    
-                  },
-                  width: 120,
-                  height: 40,
-                )
-              ],
-            ).show();
+            final data = value['data'] as Map<String, dynamic>;
+            AppData.user_info = User.fromJson(data['profile'] as Map<String, dynamic>);
+            
+            Navigator.pop(context);
+            app_status_index = 0;
+            // Navigator.of(context, rootNavigator: true).pushReplacementNamed(UIData.homeRoute);
+            Navigator.pushNamed(context, UIData.homeRoute);
           }
           else
           {
-            Alert(
-              context: context,
-              style: alertStyle(),
-              type: AlertType.info,
-              title: "Failed",
-              desc: value['message'] as String,
-              buttons: [
-                DialogButton(
-                  child: Text(
-                    "Close",
-                    style: TextStyle(color: Colors.white, fontSize: 15),
-                  ),
-                  // onPressed: () => Navigator.pop(context),
-                  onPressed: () => {
-                    // Navigator.pushNamedAndRemoveUntil(context, '/home', (_) => false),
-                    // Navigator.pushNamed(context, '/home'),
-                    
-                    Navigator.of(context, rootNavigator: true).pushReplacementNamed('/home', arguments: user_name_in.text)
-                    
-                  },
-                  width: 120,
-                  height: 40,
-                )
-              ],
-            ).show();
+            Navigator.pop(context);
+            showAlert(context, AlertType.error, value['message'] as String, "Close", () => {Navigator.pop(context)});
           }
         }, onError: (error) {
           print(error);
         });
     }
-    */
   }
 }
 

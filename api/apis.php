@@ -41,17 +41,23 @@ function login() {
         return response(false, "Need more parameters", NULL);
     }    
     $phone_number = $data['phone_number'];
-    $password = $data['phone_number'];
+    $password = $data['password'];
     $isOnLine = "1";
     
     $sel_con = "SELECT * FROM users WHERE main_phone = '$phone_number'";
     $result = mysqli_query($conn, $sel_con);
     if ($result -> num_rows > 0) {
-        $sel_con1 = "UPDATE users SET isOnLine = '$isOnLine' WHERE main_phone = '$phone_number'";
-        mysqli_query($conn, $sel_con1);
-        $result1 = mysqli_query($conn, $sel_con);
-        $senddata['profile'] = $result1 -> fetch_assoc();
-        return response(true, "Successed to login", $senddata);
+        $profile = $result -> fetch_assoc();
+        if ($profile['password'] == $password) {
+            $sel_con1 = "UPDATE users SET isOnLine = '$isOnLine' WHERE main_phone = '$phone_number'";
+            mysqli_query($conn, $sel_con1);
+            $senddata['profile'] = $profile;
+            return response(true, "Successed to login", $senddata);
+        }
+        else {
+            return response(false, "Wrong password", NULL);
+        }
+        
     }
     else {
         return response(false, "Unregistered phone number", NULL);

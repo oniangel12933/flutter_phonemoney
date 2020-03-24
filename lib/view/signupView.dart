@@ -5,12 +5,22 @@ import '../utils/components.dart';
 import '../utils/uiData.dart';
 import '../utils/appData.dart';
 
-class SignupView extends StatelessWidget {
-  
+class SignupView extends StatefulWidget {
+  @override
+  SignupViewState createState() => SignupViewState();
+}
+
+class SignupViewState extends State<SignupView>  {
+
   final user_name_in = TextEditingController();
   final user_phone_in = TextEditingController();
   final user_pwd_in = TextEditingController();
   final user_pwd_confirm_in = TextEditingController();
+
+  bool user_name_status = true;
+  bool user_phone_status = true;
+  bool user_pwd_status = true;
+  bool user_pwd_confirm_status = true;
 
   @override
   Widget build(BuildContext context) {
@@ -29,13 +39,13 @@ class SignupView extends StatelessWidget {
       children: <Widget>[
         mainHeader(), 
         SizedBox(height: 10),
-        borderedTextField(user_name_in, TextInputType.emailAddress, false, "User Name", UIData.largePadding, textFieldNull()),         
+        borderedTextField(user_name_in, user_name_status, TextInputType.emailAddress, false, "User Name", UIData.largePadding, textFieldNull()),         
         SizedBox(height: 30),
-        borderedTextField(user_phone_in, TextInputType.number, false, "Phone Number", UIData.largePadding, textFieldNull()),   
+        borderedTextField(user_phone_in, user_phone_status, TextInputType.number, false, "Phone Number", UIData.largePadding, textFieldNull()),   
         SizedBox(height: 30),
-        secureTextField(user_pwd_in, true, TextInputType.emailAddress, "Password", UIData.largePadding),
+        secureTextField(user_pwd_in, user_pwd_status, true, TextInputType.emailAddress, "Password", UIData.largePadding),
         SizedBox(height: 30),
-        secureTextField(user_pwd_confirm_in, true, TextInputType.emailAddress, "Confirm Password", UIData.largePadding),
+        secureTextField(user_pwd_confirm_in, user_pwd_confirm_status, true, TextInputType.emailAddress, "Confirm Password", UIData.largePadding),
         SizedBox(height: 30),
         roundColorButton("Sign Up", double.infinity, Colors.grey[200], Colors.black, 30, () => {signup(context)}),
         SizedBox(height: 30.0),
@@ -49,78 +59,69 @@ class SignupView extends StatelessWidget {
 
   Function signup(BuildContext context) {
 
-    if (user_name_in.text == '' || user_phone_in.text == '' || user_pwd_confirm_in.text == '' || user_pwd_in.text == '') {
-      Alert(
-        context: context,
-        style: alertStyle(),
-        type: AlertType.warning,
-        title: "Warning",
-        desc: "Please fill all parameters",
-        buttons: [
-          DialogButton(
-            child: Text(
-              "Close",
-              style: TextStyle(color: Colors.white, fontSize: 15),
-            ),
-            onPressed: () => Navigator.pop(context),
-            width: 120,
-            height: 40,
-          )
-        ],
-      ).show();
+    if (user_name_in.text == '') {
+      user_name_status = false;
+    } 
+    else {
+      user_name_status = true;
+    }
+    if (user_phone_in.text == '') {
+      user_phone_status = false;
     }
     else {
-      
+      user_phone_status = true;
+    }
+    
+    if (user_pwd_in.text == '') {
+      user_pwd_status = false;
+    }
+    else {
+      user_pwd_status = true;
+    }
+    if (user_pwd_confirm_in.text == '') {
+      user_pwd_confirm_status = false;
+    }
+    else {
+      if (user_pwd_in.text != user_pwd_confirm_in.text) {
+        user_pwd_confirm_status = false;
+      }
+      else {
+        user_pwd_confirm_status = true;
+      }
+    }
+
+
+    setState(() {});
+    
+
+    if (user_name_status && user_phone_status && user_pwd_status && user_pwd_confirm_status) {
       var params = {
-        'phone': user_phone_in.text, 
-        'password': user_pwd_in.text,
-        'device_token':''};
+        'name': user_name_in.text, 
+        'phone_number': user_phone_in.text,
+        'password': user_pwd_in.text};
+
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return Center(child: CircularProgressIndicator(),);
+          });
                       
-      postApiCall(params, 
-        "http://placetracker.net/RestAPIs/loginRequest").then((value) {
+      postApiCall(params, AppData.baseURL + AppData.signupApi).then((value) {
           // Run extra code here
           
           if (value['status'] as bool)
           {
-            Alert(
-            context: context,
-            style: alertStyle(),
-            type: AlertType.info,
-            title: "Success",
-            desc: value['message'] as String,
-            buttons: [
-              DialogButton(
-                child: Text(
-                  "Close",
-                  style: TextStyle(color: Colors.white, fontSize: 15),
-                ),
-                onPressed: () => Navigator.pop(context),
-                width: 120,
-                height: 40,
-              )
-            ],
-          ).show();
+            final data = value['data'] as Map<String, dynamic>;
+            AppData.user_info = User.fromJson(data['profile'] as Map<String, dynamic>);
+            showAlert(context, AlertType.success, value['message'] as String, "Done", () => {
+              Navigator.pop(context),
+              Navigator.pushNamed(context, UIData.homeRoute)});
           }
           else
           {
-            Alert(
-            context: context,
-            style: alertStyle(),
-            type: AlertType.info,
-            title: "Failed",
-            desc: value['message'] as String,
-            buttons: [
-              DialogButton(
-                child: Text(
-                  "Close",
-                  style: TextStyle(color: Colors.white, fontSize: 15),
-                ),
-                onPressed: () => Navigator.pop(context),
-                width: 120,
-                height: 40,
-              )
-            ],
-          ).show();
+            showAlert(context, AlertType.error, value['message'] as String, "Close", () => {
+              Navigator.pop(context),
+              Navigator.pushNamed(context, UIData.homeRoute)});
           }
         }, onError: (error) {
           print(error);
