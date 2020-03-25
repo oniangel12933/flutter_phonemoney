@@ -9,7 +9,7 @@ class ReportItem extends StatefulWidget {
   final ReportType type;
   final String optional_val;
   final String created_time;
-  final bool isOnLine;
+  final String isOnLine;
 
   ReportItem({
     Key key,
@@ -65,7 +65,7 @@ class _ReportItemState extends State<ReportItem> {
                 child: Center(
                   child: Container(
                     decoration: BoxDecoration(
-                      color: widget.isOnLine
+                      color: widget.isOnLine == "1"
                           ?Colors.greenAccent
                           :Colors.grey,
                       borderRadius: BorderRadius.circular(6),

@@ -1,5 +1,6 @@
 import 'dart:wasm';
 import 'package:flutter/material.dart';
+import 'package:keyboard_actions/keyboard_actions.dart';
 import 'package:rflutter_alert/rflutter_alert.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
@@ -22,6 +23,7 @@ mainHeader() => Column(
 secureTextField(TextEditingController controller, bool inputStatus, bool obscureText, TextInputType keyboardType, String label, double padding) => new Container(
   padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: padding),
   child: new TextField( 
+    
     controller: controller,
     obscureText: true,
     keyboardType: TextInputType.text,
@@ -41,6 +43,26 @@ secureTextField(TextEditingController controller, bool inputStatus, bool obscure
 borderedTextField(TextEditingController controller, bool inputStatus, TextInputType keyboardType, bool multiLineEnable, String label, double padding, Function action) => new Container(
   padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: padding),
   child: new TextField( 
+    onChanged: action,
+    controller: controller,
+    keyboardType: keyboardType,
+    maxLines: multiLineEnable ? null : 1,
+    decoration: new InputDecoration(
+      // hintText: 'Type here about new group',
+      labelText: label,
+      labelStyle: TextStyle(fontWeight: FontWeight.bold, color: inputStatus ? Colors.black : Colors.red),
+      enabledBorder: const OutlineInputBorder(
+        // width: 0.0 produces a thin "hairline" border
+        borderSide: const BorderSide(color: Colors.grey, width: 1.0),
+      ),
+      border: const OutlineInputBorder(),
+  )
+));
+
+borderedNumberTextField(FocusNode focusNode, TextEditingController controller, bool inputStatus, TextInputType keyboardType, bool multiLineEnable, String label, double padding, Function action) => new Container(
+  padding: EdgeInsets.symmetric(vertical: 0.0, horizontal: padding),
+  child: new TextField( 
+    focusNode: focusNode,
     onChanged: action,
     controller: controller,
     keyboardType: keyboardType,
