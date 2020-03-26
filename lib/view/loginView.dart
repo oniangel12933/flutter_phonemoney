@@ -100,6 +100,18 @@ class LoginViewState extends State<LoginView> {
           final data = value['data'] as Map<String, dynamic>;
           AppData.user_info =
               User.fromJson(data['profile'] as Map<String, dynamic>);
+          phoneNumbers = [];
+          int index = 0;
+          phoneNumbers.add(PhoneNumber(index, AppData.user_info.mainPhone));
+          index++;
+          if (AppData.user_info.otherPhones != "") {
+            final other_phones = AppData.user_info.otherPhones.split(",");
+            other_phones.map((i) {
+              final phone = PhoneNumber(index, i);
+              phoneNumbers.add(PhoneNumber(index, i));
+              index++;
+            }).toList();
+          }
           if (data['groups'] != null) {
             (data['groups'] as List).map((i) {
               final group = Group.fromJson(i as Map<String, dynamic>);
@@ -111,6 +123,19 @@ class LoginViewState extends State<LoginView> {
             }).toList();
 
             groups.sort((a, b) => int.parse(a.id).compareTo(int.parse(b.id)));
+          }
+
+          if (data['reports'] != null) {
+            (data['reports'] as List).map((i) {
+              final report = Report.fromJson(i as Map<String, dynamic>);
+              if (reports == null) {
+                reports = [report];
+              } else {
+                reports.add(report);
+              }
+            }).toList();
+
+            reports.sort((a, b) => int.parse(a.id).compareTo(int.parse(b.id)));
           }
 
           Navigator.pop(context);

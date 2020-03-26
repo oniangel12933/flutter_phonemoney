@@ -52,33 +52,32 @@ function login() {
             $sel_con1 = "UPDATE users SET isOnLine = '$isOnLine' WHERE main_phone = '$phone_number'";
             mysqli_query($conn, $sel_con1);
             $senddata['profile'] = $profile;
-            $phones = array();
-            $main_phone = $profile['main_phone'];
-            $other_phones = $profile['other_phones'];
-            if ($other_phones != "") {
-                $phones = explode(",", $other_phones);
-            }
-            array_push($phones, $main_phone);
-            $groups = array();
-            for ($i = 0; $i < count($phones); $i++) {
-                $phone_number = $phones[$i];
-                $sel_con2 = "SELECT * FROM members WHERE phone_number = '$phone_number'";
-                $result2 = mysqli_query($conn, $sel_con2);
-                if ($result2 -> num_rows > 0) {
-                    while ($member = $result2 -> fetch_assoc()) {
-                        $group_id = $member['group_id'];
-                        $sel_con3 = "SELECT * FROM groups WHERE group_id = '$group_id'";
-                        $result3 = mysqli_query($conn, $sel_con3);
-                        if ($result3 -> num_rows > 0) {
-                            array_push($groups, $result3 -> fetch_assoc());
-                        }
+            $user_id = $profile['id'];
+            $sel_con1 = "SELECT * FROM members WHERE member_user_id = '$user_id'";
+            $result1 = mysqli_query($conn, $sel_con1);
+            if ($result1 -> num_rows > 0) {
+                $groups = array();
+                while ($member = $result1 -> fetch_assoc()) {
+                    $group_id = $member['group_id'];
+                    $sel_con2 = "SELECT * FROM groups WHERE group_id = '$group_id'";
+                    $result2 = mysqli_query($conn, $sel_con2);
+                    if ($result2 -> num_rows > 0) {
+                        array_push($groups, $result2 -> fetch_assoc());
                     }
                 }
-                
+                $senddata['groups'] = $groups;
             }
 
-            if (count($groups) > 0) {
-                $senddata['groups'] = $groups;
+
+            $sel_con1 = "SELECT * FROM reports WHERE receiver_id = '$user_id'";
+            $result1 = mysqli_query($conn, $sel_con1);
+            if ($result1 -> num_rows > 0) {
+                $reports = array();
+                while ($report = $result1 -> fetch_assoc()) {
+                    array_push($reports, $report);
+                }
+
+                $senddata['reports'] = $reports;
             }
             return response(true, "Successed to login", $senddata);
         }
@@ -112,7 +111,7 @@ function createGroup() {
     mysqli_query($conn, $sel_con);
     $group_id = mysqli_insert_id($conn);
     $owner_status = "1";
-    $sel_con = "INSERT INTO members (group_id, phone_number, joined_time, owner_status) VALUES ('$group_id', '$created_phone', '$created_time', '$owner_status')";
+    $sel_con = "INSERT INTO members (group_id, member_user_id, phone_number, joined_time, owner_status) VALUES ('$group_id', '$created_user_id', '$created_phone', '$created_time', '$owner_status')";
     mysqli_query($conn, $sel_con);
     $sel_con = "SELECT * FROM groups WHERE group_id = '$group_id'";
     $senddata['group'] = mysqli_query($conn, $sel_con) -> fetch_assoc();
@@ -125,9 +124,10 @@ function addMember() {
     global $data;
     $senddata = [];
     
-    if (is_null($data['group_id']) || is_null($data['phone_numbers']) || is_null($data['joined_time'])) {
+    if (is_null($data['user_id']) || is_null($data['group_id']) || is_null($data['phone_numbers']) || is_null($data['joined_time'])) {
         return response(false, "Need more parameters", NULL);
     }    
+    $user_id = $data['user_id'];
     $group_id = $data['group_id'];    
     $new_phone_numbers = explode(",", $data['phone_numbers']);
     $joined_time = $data['joined_time'];
@@ -137,10 +137,22 @@ function addMember() {
     $registered_phones = array();
     $unregistered_phones = array();
 
+    $sel_con = "SELECT * FROM groups WHERE group_id = '$group_id'";
+    $group = mysqli_query($conn, $sel_con) -> fetch_assoc();
+    $group_title = $group['title'];
+    $group_member_number = $group['number_of_members'];
+
+    $sel_con = "SELECT * FROM users WHERE id = '$user_id'";
+    $sender_name = mysqli_query($conn, $sel_con) -> fetch_assoc()['name'];
+
+    $type = "0";
+
     $sel_con = "SELECT * FROM users";
     $result = mysqli_query($conn, $sel_con);
     while ($row = $result -> fetch_assoc()) {
         $phones = array();
+
+        $member_user_id = $row['id'];
         $main_phone = $row['main_phone'];
         $other_phones = $row['other_phones'];
         if ($other_phones != "") {
@@ -153,8 +165,8 @@ function addMember() {
             $new_phone_number = $new_phone_numbers[$i];
             for ($j = 0; $j < count($phones); $j++) {
                 if ($new_phone_number == $phones[$j]) { 
-                    $sel_con = "INSERT INTO members (group_id, phone_number,  joined_time) VALUES ('$group_id', '$new_phone_number', '$joined_time')";
-                    mysqli_query($conn, $sel_con);
+                    $sel_con1 = "INSERT INTO members (group_id, member_user_id, phone_number,  joined_time) VALUES ('$group_id', '$member_user_id', '$new_phone_number', '$joined_time')";
+                    mysqli_query($conn, $sel_con1);
                     $member_id = mysqli_insert_id($conn);
                     $member = [];
                     $member['member_id'] = (string)$member_id;
@@ -164,6 +176,9 @@ function addMember() {
                     $member['isOnLine'] = $row['isOnLine'];
                     array_push($new_members, $member);
                     array_push($registered_phones, $new_phone_number);
+
+                    $sel_con1 = "INSERT INTO reports (sender_id, sender_name, receiver_id, type, optional_val, created_time) VALUES ('$user_id', '$sender_name', '$member_user_id','$type','$group_title','$joined_time')";
+                    mysqli_query($conn, $sel_con1);
                 }
             }
             
@@ -187,6 +202,9 @@ function addMember() {
             $added_msg = $added_msg.$registered_phones[$i].",";
         }   
         $added_msg = $added_msg.$registered_phones[count($registered_phones) - 1];
+        $number_of_members = $group_member_number + count($registered_phones);
+        $sel_con1 = "UPDATE groups SET number_of_members = '$number_of_members'";
+        mysqli_query($conn, $sel_con1);
     }
     if (count($unregistered_phones) > 0) {
         $failed_msg = ", but unfortunately failed to add phone numbers: ";
@@ -226,6 +244,20 @@ function createContribute() {
     $contribute_id = mysqli_insert_id($conn);
     $sel_con = "SELECT * FROM contributes WHERE contribute_id = '$contribute_id'";
     $senddata['contribute'] = mysqli_query($conn, $sel_con) -> fetch_assoc();
+
+    $sel_con = "SELECT * FROM users WHERE id = '$created_user_id'";
+    $sender_name = mysqli_query($conn, $sel_con) -> fetch_assoc()['name'];
+    $type = "1";
+
+    $sel_con = "SELECT * FROM members WHERE group_id = '$created_group_id' AND member_user_id != '$created_user_id'";
+    $result = mysqli_query($conn, $sel_con);
+    while ($row = $result -> fetch_assoc()) {
+        $member_user_id = $row['member_user_id'];
+        $sel_con1 = "INSERT INTO reports (sender_id, sender_name, receiver_id, type, optional_val, created_time) VALUES ('$created_user_id', '$sender_name', '$member_user_id','$type','$title','$created_time')";
+        mysqli_query($conn, $sel_con1);
+        
+    }
+
 
     return response(true, "Successed to create new contribute", $senddata);
 }
@@ -281,13 +313,26 @@ function addDonate() {
         $sel_con1 = "UPDATE contributes SET current_amount = '$current_amount' WHERE contribute_id = '$contribute_id'";
         mysqli_query($conn, $sel_con1);
         $sel_con1 = "SELECT * FROM contributes WHERE contribute_id = '$contribute_id'";
-        $senddata['contribute'] = mysqli_query($conn, $sel_con1) -> fetch_assoc();
+        $contribute = mysqli_query($conn, $sel_con1) -> fetch_assoc();
+        $senddata['contribute'] = $contribute;
         $sel_con1 = "SELECT * FROM contributes WHERE contribute_id = '$contribute_id'";
         $sel_con1 = "INSERT donates (contribute_id, donated_user_id, donated_member_name, donated_member_phone, donated_time, donated_amount) VALUES ('$contribute_id', '$donated_user_id', '$donated_member_name', '$donated_member_phone', '$donated_time', '$donated_amount')";
         mysqli_query($conn, $sel_con1);
         $donate_id = mysqli_insert_id($conn);
         $sel_con1 = "SELECT * FROM donates WHERE donate_id = '$donate_id'";
         $senddata['donate'] = mysqli_query($conn, $sel_con1) -> fetch_assoc();
+
+        $type = "2";
+        $group_id = $contribute['created_group_id'];
+        $contribute_title = $contribute['title'];
+        $sel_con1 = "SELECT * FROM members WHERE group_id = '$group_id' AND member_user_id != '$donated_user_id'";
+        $result1 = mysqli_query($conn, $sel_con1);
+        while ($row = $result1 -> fetch_assoc()) {
+            $member_user_id = $row['member_user_id'];
+            $sel_con2 = "INSERT INTO reports (sender_id, sender_name, receiver_id, type, optional_val, created_time) VALUES ('$donated_user_id', '$donated_member_name', '$member_user_id','$type','$contribute_title','$donated_time')";
+            mysqli_query($conn, $sel_con2);
+            
+        }
         return response(true, "Success to donate $".$donated_amount, $senddata);
 
     }
@@ -406,38 +451,32 @@ function reloadData() {
         $result = mysqli_query($conn, $sel_con);
         if ($result -> num_rows > 0) {
             $profile = $result -> fetch_assoc();
-            $phones = array();
-            $main_phone = $profile['main_phone'];
-            $other_phones = $profile['other_phones'];
-            if ($other_phones != "") {
-                $phones = explode(",", $other_phones);
-            }
-            array_push($phones, $main_phone);
-            $groups = array();
-            for ($i = 0; $i < count($phones); $i++) {
-                $phone_number = $phones[$i];
-                $sel_con2 = "SELECT * FROM members WHERE phone_number = '$phone_number'";
-                $result2 = mysqli_query($conn, $sel_con2);
-                if ($result2 -> num_rows > 0) {
-                    while ($member = $result2 -> fetch_assoc()) {
-                        $group_id = $member['group_id'];
-                        $sel_con3 = "SELECT * FROM groups WHERE group_id = '$group_id'";
-                        $result3 = mysqli_query($conn, $sel_con3);
-                        if ($result3 -> num_rows > 0) {
-                            array_push($groups, $result3 -> fetch_assoc());
-                        }
+            $sel_con1 = "SELECT * FROM members WHERE member_user_id = '$user_id'";
+            $result1 = mysqli_query($conn, $sel_con1);
+            if ($result1 -> num_rows > 0) {
+                $groups = array();
+                while ($member = $result1 -> fetch_assoc()) {
+                    $group_id = $member['group_id'];
+                    $sel_con2 = "SELECT * FROM groups WHERE group_id = '$group_id'";
+                    $result2 = mysqli_query($conn, $sel_con2);
+                    if ($result2 -> num_rows > 0) {
+                        array_push($groups, $result2 -> fetch_assoc());
                     }
                 }
-                
+                $senddata['groups'] = $groups;
             }
 
-            if (count($groups) > 0) {
-                $senddata['groups'] = $groups;
-                return response(true, "", $senddata);
+            $sel_con1 = "SELECT * FROM reports WHERE receiver_id = '$user_id'";
+            $result1 = mysqli_query($conn, $sel_con1);
+            if ($result1 -> num_rows > 0) {
+                $reports = array();
+                while ($report = $result1 -> fetch_assoc()) {
+                    array_push($reports, $report);
+                }
+
+                $senddata['reports'] = $reports;
             }
-            else {
-                return response(false, "", NULL);
-            }
+            return response(true, "", $senddata);
         }
         else {
             return response(false, "Unregistered user", NULL);
@@ -535,9 +574,9 @@ switch ($_GET['action']) {
     case "reloaddata":
         reloadData();
         break;    
-        case "addphone":
-            addPhone();
-            break;
+    case "addphone":
+        addPhone();
+        break;
     case "getdetail":
         getDetail();        
         break;

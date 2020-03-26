@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:moneygroup/utils/uidata.dart';
+import 'package:moneygroup/utils/functions.dart';
 // import 'package:social_app_ui/screens/conversation.dart';
 import '../view/signupView.dart';
 
@@ -95,7 +96,7 @@ class _ContributeItemState extends State<ContributeItem> {
           children: <Widget>[
             SizedBox(height: 5),
             Text(
-              "${widget.created_time}",
+              getTime(widget.created_time),
               style: TextStyle(
                 color: Colors.grey,
                 fontSize: 12,

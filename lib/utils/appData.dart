@@ -130,14 +130,31 @@ class Contribute {
 }
 
 class Report {
-  String id;
-  ReportType type;
-  String optional_val;
-  String created_time;
-  User created_user;
+  final String id;
+  final String sender_id;
+  final String sender_name;
+  final String receiver_id;
+  final String type;
+  final String optional_val;
+  final String created_time;
 
-  Report(this.id, this.type, this.optional_val, this.created_time,
-      this.created_user);
+  Report(
+    this.id, 
+    this.sender_id, 
+    this.sender_name, 
+    this.receiver_id,
+    this.type,
+    this.optional_val,
+    this.created_time);
+
+  Report.fromJson(Map<String, dynamic> json)
+      : id = json['report_id'],
+        sender_id = json['sender_id'],
+        sender_name = json['sender_name'],
+        receiver_id = json['receiver_id'],
+        type = json['type'],
+        optional_val = json['optional_val'],
+        created_time = json['created_time'];
 }
 
 class Donate {
@@ -180,6 +197,7 @@ List<Group> groups;
 List<Contribute> contributes;
 List<Report> reports;
 List<Donate> donates;
+List<PhoneNumber> phoneNumbers;
 
 class CustomPopupMenu {
   CustomPopupMenu({this.title, this.icon});
@@ -204,46 +222,10 @@ List<CustomPopupMenu> donate_menu_list = <CustomPopupMenu>[
   CustomPopupMenu(title: UIData.menuRequestSettlement, icon: Icons.bookmark),
 ];
 
-List names = [
-  "Ling Waldner",
-  "Gricelda Barrera",
-  "Lenard Milton",
-  "Bryant Marley",
-  "Rosalva Sadberry",
-  "Guadalupe Ratledge",
-  "Brandy Gazda",
-  "Kurt Toms",
-  "Rosario Gathright",
-  "Kim Delph",
-  "Stacy Christensen",
-];
-
-List phones = [
-  "+45154589789",
-  "+12459456715",
-  "+68995454567",
-  "+65845656475",
-  "+98454523344",
-  "+35457841569",
-  "+58455124565",
-  "+15786646879",
-  "+29456689458",
-  "+01245689964",
-  "+58948745455",
-];
-
-List details = [
-  "Hey, how are you doing?",
-  "Are you available tomorrow?",
-  "It's late. Go to bed!",
-  "This cracked me up",
-  "Flutter Rocks!!!",
-  "The last rocket",
-  "Griezmann signed for Barca❤️❤️",
-  "Will you be attending the meetup tomorrow?",
-  "Are you angry at something?",
-  "Let's make a UI serie.",
-  "Can i hear your voice?",
-];
+class PhoneNumber {
+  final int id;
+  final String number;
+  PhoneNumber(this.id, this.number);
+}
 
 Function textFieldNull() {}

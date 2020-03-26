@@ -10,11 +10,6 @@ import '../utils/components.dart';
 import '../utils/uiData.dart';
 import '../widgets/donate_item.dart';
 
-class PhoneNumber {
-  final int id;
-  final String number;
-  PhoneNumber(this.id, this.number);
-}
 
 class DonateView extends StatefulWidget {
   final bool donatedStatus;
@@ -37,24 +32,12 @@ class DonateViewState extends State<DonateView> {
   bool add_donate_status = false;
 
   int selected_phone_index = 0;
-  List<PhoneNumber> phone_numbers = [];
   CustomPopupMenu _selectedMenu = group_menu_list[0];
 
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-    int index = 0;
-    phone_numbers.add(PhoneNumber(index, AppData.user_info.mainPhone));
-    index++;
-    if (AppData.user_info.otherPhones != "") {
-      final other_phones = AppData.user_info.otherPhones.split(",");
-      other_phones.map((i) {
-        final phone = PhoneNumber(index, i);
-        phone_numbers.add(PhoneNumber(index, i));
-        index++;
-      }).toList();
-    }
 
     number_of_donates = donates == null ? 0 : donates.length;
     if (donates != null) {
@@ -64,13 +47,6 @@ class DonateViewState extends State<DonateView> {
     }
   }
 
-  bool isMeCheck(String number) {
-    if (phones.contains(number)) {
-      return true;
-    } else {
-      return false;
-    }
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -260,10 +236,11 @@ class DonateViewState extends State<DonateView> {
                                       Container(
                                         alignment: Alignment.center,
                                         width: double.maxFinite,
+                                        height: 150,
                                         child: ListView(
                                           shrinkWrap: true,
                                           padding: EdgeInsets.all(8.0),
-                                          children: phone_numbers
+                                          children: phoneNumbers
                                               .map((phone_number) =>
                                                   RadioListTile(
                                                     groupValue:
@@ -284,6 +261,8 @@ class DonateViewState extends State<DonateView> {
                                       SizedBox(height: 15),
                                       GestureDetector(
                                           onTap: () => {
+                                            add_donate_status = false,
+                                            setState((){}),
                                                 Navigator.pushNamed(context,
                                                     UIData.accountRoute)
                                               },
@@ -345,7 +324,7 @@ class DonateViewState extends State<DonateView> {
                                                 Colors.black,
                                                 10, () async {
                                               final formatter = new DateFormat(
-                                                  'yyyy-MM-dd-hh-mm');
+                                                  'yyyy-MM-dd-HH-mm');
                                               final current_time = formatter
                                                   .format(new DateTime.now());
                                               var params = {
@@ -357,7 +336,7 @@ class DonateViewState extends State<DonateView> {
                                                 'donated_member_name':
                                                     AppData.user_info.name,
                                                 'donated_member_phone':
-                                                    phone_numbers[
+                                                    phoneNumbers[
                                                             selected_phone_index]
                                                         .number,
                                                 'donated_time': current_time,
@@ -388,7 +367,7 @@ class DonateViewState extends State<DonateView> {
                                                       Donate.fromJson(
                                                           data['donate'] as Map<
                                                               String, dynamic>);
-                                                  if (donate == null) {
+                                                  if (donates == null) {
                                                     donates = [donate];
                                                   } else {
                                                     donates.add(donate);

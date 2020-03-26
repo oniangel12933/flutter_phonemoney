@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:moneygroup/utils/functions.dart';
 import '../utils/appData.dart';
 import '../utils/uiData.dart';
 
@@ -6,7 +7,7 @@ import '../utils/uiData.dart';
 class ReportItem extends StatefulWidget {
 
   final String name;
-  final ReportType type;
+  final String type;
   final String optional_val;
   final String created_time;
   final String isOnLine;
@@ -26,6 +27,23 @@ class ReportItem extends StatefulWidget {
 }
 
 class _ReportItemState extends State<ReportItem> {
+
+  String subtitle = '';
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    if (this.widget.type == "0") {
+      subtitle = 'added you on ${widget.optional_val}';
+    }
+    else if (this.widget.type == "1") {
+      subtitle = 'created ${widget.optional_val}';
+    }
+    else {
+      subtitle = 'added donate for ${widget.optional_val}';
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -86,7 +104,7 @@ class _ReportItemState extends State<ReportItem> {
             fontWeight: FontWeight.bold,
           ),
         ),
-        subtitle: Text(widget.optional_val),
+        subtitle: Text(subtitle),
         trailing: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
           children: <Widget>[
@@ -117,7 +135,7 @@ class _ReportItemState extends State<ReportItem> {
             ),
             SizedBox(height: 10),
             Text(
-              "${widget.created_time}",
+              getTime(widget.created_time),
               style: TextStyle(
                 fontWeight: FontWeight.w300,
                 fontSize: 11,

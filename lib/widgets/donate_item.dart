@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:moneygroup/utils/uiData.dart';
 import 'package:moneygroup/utils/appData.dart';
+import 'package:moneygroup/utils/functions.dart';
 
 class DonateItem extends StatefulWidget {
   final String name;
@@ -105,7 +106,7 @@ class _DonateItemState extends State<DonateItem> {
                   bottom: 10.0,
                 ),
           child: Text(
-            widget.time,
+            getTime(widget.time),
             style: TextStyle(
               color: Colors.black,
               fontSize: 10.0,

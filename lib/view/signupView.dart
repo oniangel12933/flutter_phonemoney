@@ -129,6 +129,18 @@ class SignupViewState extends State<SignupView> {
           final data = value['data'] as Map<String, dynamic>;
           AppData.user_info =
               User.fromJson(data['profile'] as Map<String, dynamic>);
+          phoneNumbers = [];
+          int index = 0;
+          phoneNumbers.add(PhoneNumber(index, AppData.user_info.mainPhone));
+          index++;
+          if (AppData.user_info.otherPhones != "") {
+            final other_phones = AppData.user_info.otherPhones.split(",");
+            other_phones.map((i) {
+              final phone = PhoneNumber(index, i);
+              phoneNumbers.add(PhoneNumber(index, i));
+              index++;
+            }).toList();
+          }
           showAlert(
               context,
               AlertType.success,

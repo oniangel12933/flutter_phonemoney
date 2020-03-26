@@ -26,6 +26,7 @@ class MainViewState extends State<MainView>
   bool create_contribute_status = false;
   bool add_member_status = false;
 
+
   @override
   void initState() {
     // TODO: implement initState
@@ -160,7 +161,18 @@ class MainViewState extends State<MainView>
                     groups.sort(
                         (a, b) => int.parse(a.id).compareTo(int.parse(b.id)));
                   }
+                  if (data['reports'] != null) {
+                    (data['reports'] as List).map((i) {
+                      final report = Report.fromJson(i as Map<String, dynamic>);
+                      if (reports == null) {
+                        reports = [report];
+                      } else {
+                        reports.add(report);
+                      }
+                    }).toList();
 
+                    reports.sort((a, b) => int.parse(a.id).compareTo(int.parse(b.id)));
+                  }
                   if (data['contributes'] != null) {
                     contributes = [];
                     (data['contributes'] as List).map((i) {
@@ -347,7 +359,8 @@ class MainViewState extends State<MainView>
           height: double.infinity,
           child: GestureDetector(
             onTap: () {},
-            child: Center(
+            child: SingleChildScrollView(
+              child:Center(
                 child: ClipRRect(
                     borderRadius: BorderRadius.circular(10),
                     child: Container(
@@ -414,7 +427,7 @@ class MainViewState extends State<MainView>
                                   if (new_group_title_status &&
                                       new_group_description_status) {
                                     final formatter =
-                                        new DateFormat('yyyy-MM-dd-hh-mm');
+                                        new DateFormat('yyyy-MM-dd-HH-mm');
                                     final current_time =
                                         formatter.format(new DateTime.now());
 
@@ -474,7 +487,7 @@ class MainViewState extends State<MainView>
                         ),
                       ),
                     ))),
-          )));
+          ))));
 
   bool group_owner_status = false;
 
@@ -602,27 +615,13 @@ class MainViewState extends State<MainView>
         ReportType report_type;
         String report_optional_val;
 
-        if (report.type == ReportType.member_add) {
-          // report_type = ReportType.member_add;
-          report_optional_val = "added to ${report.optional_val} group";
-        } else if (report.type == ReportType.contribute_creat) {
-          // report_type = ReportType.contribute_creat;
-          report_optional_val = "created new contribute";
-        } else if (report.type == ReportType.contribute_join) {
-          // report_type = ReportType.contribute_join;
-          report_optional_val = "joined on ${report.optional_val}";
-        } else {
-          // report_type = ReportType.contribute_end;
-          report_optional_val = "ended  ${report.optional_val}";
-        }
-
         return ReportItem(
             // dp: group.,
-            name: report.created_user.name,
+            name: report.sender_name,
             type: report.type,
-            optional_val: report_optional_val,
+            optional_val: report.optional_val,
             created_time: report.created_time,
-            isOnLine: report.created_user.isOnLine);
+            isOnLine: "1");
       });
 
 ////////////// ! Contribute ////////////////////
@@ -802,7 +801,7 @@ class MainViewState extends State<MainView>
                                       new_contribute_beneficiary_name_status &&
                                       new_contribute_beneficiary_phone_status) {
                                     final formatter =
-                                        new DateFormat('yyyy-MM-dd-hh-mm');
+                                        new DateFormat('yyyy-MM-dd-HH-mm');
                                     final current_time =
                                         formatter.format(new DateTime.now());
                                     var params = {
@@ -1028,7 +1027,7 @@ class MainViewState extends State<MainView>
                                           add_member_status = false,
                                           setState(() {})
                                         }),
-                                roundColorButton("Create", 140, Colors.green,
+                                roundColorButton("Add", 140, Colors.green,
                                     Colors.black, 10, () async {
                                   new_member_phone_status =
                                       checkInputed(new_member_phone);
@@ -1036,10 +1035,11 @@ class MainViewState extends State<MainView>
 
                                   if (new_member_phone_status) {
                                     final formatter =
-                                        new DateFormat('yyyy-MM-dd-hh-mm');
+                                        new DateFormat('yyyy-MM-dd-HH-mm');
                                     final current_time =
                                         formatter.format(new DateTime.now());
                                     var params = {
+                                      "user_id": AppData.user_info.id,
                                       "group_id":
                                           groups[selected_group_index].id,
                                       "phone_numbers": new_member_phone.text,
